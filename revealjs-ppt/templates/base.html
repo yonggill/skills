@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{TITLE}}</title>
+
+  <!-- Google Fonts -->
+  {{FONT_LINKS}}
+
+  <!-- reveal.js core -->
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@4.6.1/dist/reset.css" />
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@4.6.1/dist/reveal.css" />
+  <link rel="stylesheet" href="https://unpkg.com/reveal.js@4.6.1/plugin/highlight/monokai.css" />
+
+  <style>
+    /* ===== Design System Tokens ===== */
+    {{DESIGN_TOKENS}}
+
+    /* ===== reveal.js Variable Wiring ===== */
+    .reveal {
+      --r-background-color: var(--color-background);
+      --r-main-color: var(--color-text-primary);
+      --r-heading-color: var(--color-text-primary);
+      --r-link-color: var(--color-link);
+      --r-link-color-hover: var(--color-primary);
+      --r-selection-background-color: color-mix(in srgb, var(--color-primary) 30%, white);
+      --r-selection-color: var(--color-text-primary);
+      --r-main-font-size: 1.125rem;
+      --r-heading-text-transform: none;
+      --r-heading-font-weight: 700;
+      --r-heading-line-height: 1.2;
+      --r-block-margin: 1.5rem;
+      --r-code-font: 'JetBrains Mono', 'Fira Code', monospace;
+    }
+
+    /* ===== Layouts ===== */
+    {{LAYOUT_CSS}}
+
+    /* ===== Components ===== */
+    {{COMPONENT_CSS}}
+  </style>
+</head>
+<body>
+
+<div class="reveal">
+  <div class="slides">
+    {{SLIDES}}
+  </div>
+</div>
+
+<script src="https://unpkg.com/reveal.js@4.6.1/dist/reveal.js"></script>
+<script src="https://unpkg.com/reveal.js@4.6.1/plugin/zoom/zoom.js"></script>
+<script src="https://unpkg.com/reveal.js@4.6.1/plugin/notes/notes.js"></script>
+<script src="https://unpkg.com/reveal.js@4.6.1/plugin/highlight/highlight.js"></script>
+{{EXTRA_PLUGINS}}
+
+<script>
+  Reveal.initialize({
+    hash: true,
+    controls: true,
+    progress: true,
+    center: true,
+    transition: '{{TRANSITION}}',
+    width: 1280,
+    height: 720,
+    margin: 0.04,
+    plugins: [RevealZoom, RevealNotes, RevealHighlight{{EXTRA_PLUGIN_NAMES}}]
+  });
+</script>
+
+</body>
+</html>

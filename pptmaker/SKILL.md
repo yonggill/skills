@@ -39,6 +39,8 @@ Map each slide to a layout and component set. Select palette + font pairing base
 
 ## Phase 4: Generation
 
+**Before generating, read the Generation Rules section below. Every rule is mandatory.**
+
 Read `templates/base.html`, `references/revealjs-api.md`.
 
 1. Start from base.html boilerplate
@@ -50,6 +52,56 @@ Read `templates/base.html`, `references/revealjs-api.md`.
 7. For image slots: WebSearch for relevant stock images (Unsplash/Pexels), embed URLs with `data-image-slot` and `data-image-desc` markers
 8. Replace `{{TRANSITION}}` (default: `slide`)
 9. Write final HTML file as `{topic-slug}-presentation.html`
+
+## Generation Rules (MANDATORY)
+
+These rules apply during Phase 4. Violating them causes layout breaks.
+
+### reveal.js Compatibility
+- Set `center: false` in Reveal.initialize — all centering is handled by layout CSS
+- Every `<section>` gets its full-height layout class — no bare sections
+- Never set `height: 100%` on any layout class — the global override handles it
+- Never use inline `style="display: grid"` or `style="display: flex"` — use layout classes only
+
+### Overflow Prevention
+- Every grid/flex child must have `min-width: 0`
+- Grid gaps: max `1rem` for 3+ columns, max `1.5rem` for 2 columns
+- Total content width (padding + gaps + content) must not exceed 1280px
+- Use `overflow: hidden` on all containers with constrained children
+
+### Typography for Projection
+- Minimum body text: `var(--type-body)` (1.125rem / 18px) — never smaller for body
+- Minimum readable text: `var(--type-body-sm)` (1rem / 16px) — for bullets and secondary
+- Captions/labels only: `var(--type-caption)` (0.8125rem) — never for readable content
+- Maximum 50 Korean characters per line — add line breaks or reduce text
+
+### Heading Alignment Consistency
+- Content slides: ALL headings left-aligned
+- Title slide + Section dividers: centered
+- Never mix alignment within a session
+
+### Image Handling
+- Use WebSearch to find real Unsplash/Pexels URLs — never use placehold.co for final output
+- If WebSearch fails, use a CSS gradient background instead of a placeholder image:
+  `background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));`
+- All images: `data-image-slot`, `data-image-desc`, `alt` attributes required
+- placehold.co URLs must use ASCII-only text (Korean characters render as broken boxes)
+
+### Animation Guidelines
+- Use `fragment fade-up` on list items (icon-list, bullets) — max 5 items
+- Do NOT use fragment on KPI cards, feature cards, or any grid-based component
+- Section dividers: `data-transition="fade"`
+- Content slides: use global transition (default: `slide`)
+
+### Korean Text Rules
+- `word-break: keep-all` is set globally — do not override with `break-all`
+- For text inside `max-width` containers: always add `margin: 0 auto` for centering
+- Avoid sentences longer than 2 lines at projection size — split into bullets
+
+### Slide Density Balance
+- Every content slide should use 60-80% of the vertical space
+- If content is sparse (< 40% filled), add a supporting visual or split with previous slide
+- If content overflows, split into 2 slides — never rely on overflow:hidden to clip content
 
 ## Phase 5: Visual Quality Review (Playwright-based, Automatic)
 

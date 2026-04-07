@@ -35,13 +35,42 @@
     }
 
     /* ===== Global Slide Overrides ===== */
+    /* CRITICAL: center:false in Reveal config — all centering handled by layout CSS */
     .reveal .slides section {
-      overflow: hidden;
-      box-sizing: border-box;
+      width: 100% !important;
+      height: 100% !important;
+      max-width: 100% !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
       word-break: keep-all;
+      display: flex !important;
+      flex-direction: column;
+      padding: 2.5rem 3rem;
+    }
+
+    /* All direct children must respect container width */
+    .reveal .slides section > * {
+      max-width: 100%;
+      min-width: 0;
+      flex-shrink: 0;
+    }
+
+    /* All grids and flex containers: prevent overflow */
+    .reveal .slides section [style*="grid"],
+    .reveal .slides section [class*="grid"],
+    .reveal .slides section [class*="flow"],
+    .reveal .slides section [class*="col-"] {
+      width: 100%;
+      min-width: 0;
+      overflow: hidden;
     }
 
     .reveal .slides {
+      text-align: left;
+    }
+
+    /* Heading alignment: left for content, center for title/divider */
+    .reveal h1, .reveal h2, .reveal h3 {
       text-align: left;
     }
 
@@ -71,7 +100,7 @@
     hash: true,
     controls: true,
     progress: true,
-    center: true,
+    center: false,
     transition: '{{TRANSITION}}',
     width: 1280,
     height: 720,

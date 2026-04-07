@@ -31,12 +31,11 @@ Full-bleed primary-color background. Left-aligned with large hero heading, eyebr
 ```css
 /* ── Title Slide ──────────────────────────────────────────────────── */
 .layout-title {
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: flex-start;
-  padding: 4rem 5rem;
+  padding: 3rem 4rem;
   gap: var(--space-5);
+  text-align: left;
 }
 
 .title-eyebrow {
@@ -46,6 +45,7 @@ Full-bleed primary-color background. Left-aligned with large hero heading, eyebr
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.65);
   margin: 0;
+  overflow-wrap: break-word;
 }
 
 .title-main {
@@ -56,6 +56,7 @@ Full-bleed primary-color background. Left-aligned with large hero heading, eyebr
   color: white;
   max-width: 80%;
   margin: 0;
+  overflow-wrap: break-word;
 }
 
 .title-subtitle {
@@ -64,6 +65,7 @@ Full-bleed primary-color background. Left-aligned with large hero heading, eyebr
   color: rgba(255, 255, 255, 0.80);
   max-width: 60%;
   margin: 0;
+  overflow-wrap: break-word;
 }
 
 .title-meta {
@@ -109,28 +111,27 @@ Full-bleed primary-color background with a large ghost number, section title, an
 ```css
 /* ── Section Divider ──────────────────────────────────────────────── */
 .layout-section-divider {
-  display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   text-align: center;
-  padding: 4rem 5rem;
+  padding: 3rem 4rem;
   gap: var(--space-4);
   position: relative;
 }
 
 .section-number {
-  font-size: 6rem;
+  font-size: 12rem;
   font-weight: var(--fw-extrabold);
   line-height: 1;
-  color: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.08);
   letter-spacing: var(--ls-tighter);
   position: absolute;
-  top: 2rem;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   pointer-events: none;
   user-select: none;
+  z-index: 0;
 }
 
 .section-title {
@@ -141,6 +142,7 @@ Full-bleed primary-color background with a large ghost number, section title, an
   margin: 0;
   position: relative;
   z-index: 1;
+  overflow-wrap: break-word;
 }
 
 .section-description {
@@ -153,6 +155,7 @@ Full-bleed primary-color background with a large ghost number, section title, an
   word-break: keep-all;
   position: relative;
   z-index: 1;
+  overflow-wrap: break-word;
 }
 ```
 
@@ -216,10 +219,11 @@ Two-column grid: text on the left, image on the right. Includes a reversed varia
 /* ── Text + Image ─────────────────────────────────────────────────── */
 .layout-text-image,
 .layout-image-text {
-  display: grid;
+  display: grid !important;
+  flex-direction: row;
   grid-template-columns: 1fr 1fr;
-  gap: var(--gap-xl);
-  padding: 3rem 4rem;
+  gap: 1.5rem;
+  padding: 2rem 3rem;
   align-items: center;
 }
 
@@ -238,6 +242,9 @@ Two-column grid: text on the left, image on the right. Includes a reversed varia
   flex-direction: column;
   justify-content: center;
   gap: var(--space-4);
+  min-width: 0;
+  overflow: hidden;
+  overflow-wrap: break-word;
 }
 
 .slide-eyebrow {
@@ -256,6 +263,7 @@ Two-column grid: text on the left, image on the right. Includes a reversed varia
   letter-spacing: var(--ls-tight);
   color: var(--color-text-primary);
   margin: 0;
+  overflow-wrap: break-word;
 }
 
 .slide-body {
@@ -263,6 +271,7 @@ Two-column grid: text on the left, image on the right. Includes a reversed varia
   line-height: var(--lh-relaxed);
   color: var(--color-text-secondary);
   margin: 0;
+  overflow-wrap: break-word;
 }
 
 .slide-bullets {
@@ -283,6 +292,7 @@ Two-column grid: text on the left, image on the right. Includes a reversed varia
   overflow: hidden;
   border-radius: 0.75rem;
   max-height: 520px;
+  min-width: 0;
 }
 
 .slide-img {
@@ -344,24 +354,24 @@ Side-by-side comparison of two options, approaches, or entities. Each column has
 ```css
 /* ── Two-Column Comparison ────────────────────────────────────────── */
 .layout-two-col {
-  display: flex;
-  flex-direction: column;
   justify-content: flex-start;
-  padding: 2.5rem 3.5rem;
-  gap: var(--space-4);
+  gap: 0.75rem;
 }
 
 .col-header {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--gap-md);
+  gap: 1rem;
+  width: 100%;
+  min-width: 0;
 }
 
 .col-body {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: var(--gap-md);
-  flex: 1;
+  gap: 1rem;
+  width: 100%;
+  min-width: 0;
 }
 
 .col-label {
@@ -390,6 +400,9 @@ Side-by-side comparison of two options, approaches, or entities. Each column has
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+  min-width: 0;
+  overflow: hidden;
+  overflow-wrap: break-word;
 }
 
 .col-card--accent {
@@ -484,11 +497,8 @@ Three equal-width feature cards in a single row, each with an icon, title, and d
 ```css
 /* ── Three-Column Features ────────────────────────────────────────── */
 .layout-three-col {
-  display: flex;
-  flex-direction: column;
   justify-content: flex-start;
-  padding: 2.5rem 3rem;
-  gap: var(--space-6);
+  gap: 1rem;
 }
 
 .slide-header {
@@ -501,13 +511,14 @@ Three equal-width feature cards in a single row, each with an icon, title, and d
   font-size: var(--type-body);
   color: var(--color-text-secondary);
   margin: 0;
+  overflow-wrap: break-word;
 }
 
 .three-col-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--gap-md);
-  flex: 1;
+  gap: 1rem;
+  width: 100%;
   min-width: 0;
   overflow: hidden;
 }
@@ -515,6 +526,7 @@ Three equal-width feature cards in a single row, each with an icon, title, and d
 .feature-card {
   min-width: 0;
   overflow: hidden;
+  overflow-wrap: break-word;
 }
 ```
 
@@ -552,11 +564,9 @@ Full-bleed background image set via `data-background-image` on the `<section>`. 
 /* ── Full-Image with Overlay ──────────────────────────────────────── */
 .layout-full-image {
   position: relative;
-  display: flex;
-  flex-direction: column;
   align-items: flex-start;
   justify-content: flex-end;
-  padding: 0;
+  padding: 0 !important;
 }
 
 .overlay-scrim {
@@ -646,19 +656,18 @@ Centered full-slide quote with large decorative quotation mark, attributed to a 
 ```css
 /* ── Quote / Testimonial ──────────────────────────────────────────── */
 .layout-quote {
-  display: flex;
-  align-items: center;
   justify-content: center;
-  padding: 4rem 6rem;
+  align-items: center;
 }
 
 .quote-block {
-  max-width: 740px;
+  max-width: 700px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: var(--space-5);
+  overflow-wrap: break-word;
 }
 
 .quote-mark {
@@ -803,11 +812,8 @@ Four grid variants for arranging `.kpi-card` components (defined in `components.
 ```css
 /* ── KPI Dashboard Layout ─────────────────────────────────────────── */
 .layout-kpi {
-  display: flex;
-  flex-direction: column;
   justify-content: flex-start;
-  padding: 2.5rem 3rem;
-  gap: var(--space-5);
+  gap: 1rem;
 }
 
 /* 2×2 — two columns, two rows */
@@ -815,24 +821,24 @@ Four grid variants for arranging `.kpi-card` components (defined in `components.
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: var(--gap-md);
-  flex: 1;
+  gap: 1rem;
+  width: 100%;
 }
 
 /* 1×3 — three equal columns, single row */
 .kpi-grid-1x3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--gap-md);
-  flex: 1;
+  gap: 1rem;
+  width: 100%;
 }
 
 /* 1×4 — four compact columns, single row */
 .kpi-grid-1x4 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: var(--gap-sm);
-  flex: 1;
+  gap: 1rem;
+  width: 100%;
 }
 
 /* Featured — one hero card spanning 2 rows + 2 supporting cards */
@@ -840,12 +846,19 @@ Four grid variants for arranging `.kpi-card` components (defined in `components.
   display: grid;
   grid-template-columns: 2fr 1fr;
   grid-template-rows: repeat(2, 1fr);
-  gap: var(--gap-md);
-  flex: 1;
+  gap: 1rem;
+  width: 100%;
 }
 
 .kpi-grid-featured > :first-child {
   grid-row: 1 / 3;
+}
+
+/* All KPI cards prevent overflow */
+.kpi-card {
+  min-width: 0;
+  overflow: hidden;
+  overflow-wrap: break-word;
 }
 
 /* Hero card enlarges the number */
@@ -935,10 +948,7 @@ Two orientations: horizontal for sequential milestones across the top of a slide
 ```css
 /* ── Timeline Layout ──────────────────────────────────────────────── */
 .layout-timeline {
-  display: flex;
-  flex-direction: column;
   justify-content: flex-start;
-  padding: 2.5rem 3rem;
   gap: var(--space-6);
 }
 
@@ -948,7 +958,8 @@ Two orientations: horizontal for sequential milestones across the top of a slide
   flex-direction: row;
   position: relative;
   padding-top: 3rem;
-  flex: 1;
+  width: 100%;
+  min-width: 0;
   align-items: flex-start;
 }
 
@@ -972,6 +983,8 @@ Two orientations: horizontal for sequential milestones across the top of a slide
   gap: var(--space-2);
   padding-top: 2rem;
   position: relative;
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .timeline-h .timeline-dot {
@@ -994,7 +1007,8 @@ Two orientations: horizontal for sequential milestones across the top of a slide
   position: relative;
   padding-left: 3rem;
   gap: var(--space-5);
-  flex: 1;
+  width: 100%;
+  min-width: 0;
 }
 
 /* Connecting line down the left */
@@ -1014,6 +1028,8 @@ Two orientations: horizontal for sequential milestones across the top of a slide
   gap: var(--space-6);
   align-items: flex-start;
   position: relative;
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .timeline-v .timeline-dot {
@@ -1110,11 +1126,8 @@ Horizontal sequence of numbered steps connected by arrows. For up to 5 steps.
 ```css
 /* ── Process / Flow ───────────────────────────────────────────────── */
 .layout-process {
-  display: flex;
-  flex-direction: column;
   justify-content: flex-start;
-  padding: 2.5rem 3rem;
-  gap: var(--space-8);
+  gap: 1rem;
 }
 
 .process-flow {
@@ -1122,14 +1135,13 @@ Horizontal sequence of numbered steps connected by arrows. For up to 5 steps.
   flex-direction: row;
   align-items: flex-start;
   justify-content: center;
-  gap: var(--space-2);
   width: 100%;
   min-width: 0;
   overflow: hidden;
 }
 
 .process-step {
-  flex: 1;
+  flex: 1 1 0;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1158,22 +1170,23 @@ Horizontal sequence of numbered steps connected by arrows. For up to 5 steps.
   font-size: var(--type-body-sm);
   font-weight: var(--fw-semibold);
   color: var(--color-text-primary);
+  overflow-wrap: break-word;
 }
 
 .process-desc {
-  font-size: var(--type-caption);
+  font-size: 0.75rem;
   line-height: var(--lh-relaxed);
   color: var(--color-text-secondary);
-  max-width: 140px;
+  max-width: none;
   margin: 0;
   word-break: keep-all;
   overflow-wrap: break-word;
 }
 
 .process-arrow {
-  font-size: 1.5rem;
+  flex: 0 0 auto;
+  font-size: 1rem;
   color: var(--color-border);
-  flex-shrink: 0;
   align-self: center;
   margin-top: calc(-1 * var(--space-6));
   line-height: 1;
@@ -1240,19 +1253,15 @@ Split view with a code editor pane on the left and a rendered result or annotati
 ```css
 /* ── Code Showcase ────────────────────────────────────────────────── */
 .layout-code {
-  display: flex;
-  flex-direction: column;
   justify-content: flex-start;
-  padding: 2rem 3rem;
-  gap: var(--space-5);
+  gap: 1rem;
 }
 
 .code-showcase-grid {
   display: grid;
-  grid-template-columns: 3fr 2fr;
-  gap: var(--gap-md);
-  max-height: 520px;
-  flex: 1;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  width: 100%;
   min-width: 0;
   overflow: hidden;
 }
@@ -1380,18 +1389,16 @@ Responsive grid of team member cards. Auto-fills available space with minimum 16
 ```css
 /* ── Team Grid ────────────────────────────────────────────────────── */
 .layout-team {
-  display: flex;
-  flex-direction: column;
   justify-content: flex-start;
-  padding: 2.5rem 3rem;
   gap: var(--space-6);
 }
 
 .team-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: var(--gap-md);
-  flex: 1;
+  gap: 1rem;
+  width: 100%;
+  min-width: 0;
   align-content: start;
 }
 
@@ -1405,6 +1412,9 @@ Responsive grid of team member cards. Auto-fills available space with minimum 16
   border-radius: 0.75rem;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
+  min-width: 0;
+  overflow: hidden;
+  overflow-wrap: break-word;
 }
 
 .team-avatar {
@@ -1498,18 +1508,16 @@ Three-column pricing card grid with a featured/highlighted tier. The featured ca
 ```css
 /* ── Pricing Table ────────────────────────────────────────────────── */
 .layout-pricing {
-  display: flex;
-  flex-direction: column;
   justify-content: flex-start;
-  padding: 2rem 3rem;
   gap: var(--space-5);
 }
 
 .pricing-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--gap-md);
-  flex: 1;
+  gap: 1rem;
+  width: 100%;
+  min-width: 0;
   align-items: center;
 }
 
@@ -1521,8 +1529,10 @@ Three-column pricing card grid with a featured/highlighted tier. The featured ca
   border-radius: 1rem;
   border: 2px solid var(--color-border);
   background: var(--color-surface);
-  height: 100%;
   box-sizing: border-box;
+  min-width: 0;
+  overflow: hidden;
+  overflow-wrap: break-word;
 }
 
 .pricing-card--featured {
@@ -1658,11 +1668,13 @@ Full-bleed split screen with no internal padding between panes. Left pane shows 
 ```css
 /* ── Before / After ───────────────────────────────────────────────── */
 .layout-before-after {
-  display: grid;
+  display: grid !important;
+  flex-direction: row;
   grid-template-columns: 1fr 1fr;
   gap: 0;
-  padding: 0;
+  padding: 0 !important;
   overflow: hidden;
+  justify-content: flex-start;
 }
 
 .before-pane {
@@ -1673,6 +1685,9 @@ Full-bleed split screen with no internal padding between panes. Left pane shows 
   flex-direction: column;
   justify-content: center;
   gap: var(--space-4);
+  min-width: 0;
+  overflow: hidden;
+  overflow-wrap: break-word;
 }
 
 .after-pane {
@@ -1682,6 +1697,9 @@ Full-bleed split screen with no internal padding between panes. Left pane shows 
   flex-direction: column;
   justify-content: center;
   gap: var(--space-4);
+  min-width: 0;
+  overflow: hidden;
+  overflow-wrap: break-word;
 }
 
 .pane-label {
@@ -1811,10 +1829,7 @@ Numbered list of agenda items, each with a title and optional time estimate. Act
 ```css
 /* ── Agenda / TOC ─────────────────────────────────────────────────── */
 .layout-agenda {
-  display: flex;
-  flex-direction: column;
   justify-content: flex-start;
-  padding: 2.5rem 3.5rem;
   gap: var(--space-5);
 }
 
@@ -1825,6 +1840,8 @@ Numbered list of agenda items, each with a title and optional time estimate. Act
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  width: 100%;
+  min-width: 0;
 }
 
 .agenda-item {
@@ -1836,6 +1853,8 @@ Numbered list of agenda items, each with a title and optional time estimate. Act
   border-radius: 0.5rem;
   border-left: 4px solid transparent;
   transition: background 0.15s ease, border-color 0.15s ease;
+  min-width: 0;
+  overflow-wrap: break-word;
 }
 
 .agenda-item.active {

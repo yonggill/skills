@@ -1,6 +1,6 @@
 ---
-name: projectology
-description: Analyze project source code, architecture, and structure to generate a comprehensive context document (.claude/projectology.md). Use when entering a new project, needing full project understanding, or when asked to "analyze this project", "understand this codebase", "generate project context", "map this project", or "projectology". Supports smart mode (auto-detect) and forced regeneration.
+name: pscan
+description: 프로젝트 스캔. Analyze project source code, architecture, and structure to generate a comprehensive context document (.claude/projectology.md). Use when entering a new project, needing full project understanding, or when asked to "프로젝트 스캔", "analyze this project", "understand this codebase", "generate project context", "scan this project", or "pscan". Supports smart mode (auto-detect) and forced regeneration.
 argument-hint: "[generate]"
 ---
 

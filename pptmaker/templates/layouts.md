@@ -1242,9 +1242,8 @@ Split view with a code editor pane on the left and a rendered result or annotati
 .layout-code {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   padding: 2rem 3rem;
-  box-sizing: border-box;
-  height: 100%;
   gap: var(--space-5);
 }
 
@@ -1254,6 +1253,8 @@ Split view with a code editor pane on the left and a rendered result or annotati
   gap: var(--gap-md);
   max-height: 520px;
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .code-pane,
@@ -1263,6 +1264,7 @@ Split view with a code editor pane on the left and a rendered result or annotati
   border-radius: 0.75rem;
   overflow: hidden;
   border: 1px solid var(--color-border);
+  min-width: 0;
 }
 
 .code-pane-header {
@@ -1380,9 +1382,8 @@ Responsive grid of team member cards. Auto-fills available space with minimum 16
 .layout-team {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   padding: 2.5rem 3rem;
-  box-sizing: border-box;
-  height: 100%;
   gap: var(--space-6);
 }
 
@@ -1499,9 +1500,8 @@ Three-column pricing card grid with a featured/highlighted tier. The featured ca
 .layout-pricing {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   padding: 2rem 3rem;
-  box-sizing: border-box;
-  height: 100%;
   gap: var(--space-5);
 }
 
@@ -1662,8 +1662,6 @@ Full-bleed split screen with no internal padding between panes. Left pane shows 
   grid-template-columns: 1fr 1fr;
   gap: 0;
   padding: 0;
-  height: 100%;
-  box-sizing: border-box;
   overflow: hidden;
 }
 
@@ -1815,11 +1813,9 @@ Numbered list of agenda items, each with a title and optional time estimate. Act
 .layout-agenda {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   padding: 2.5rem 3.5rem;
-  box-sizing: border-box;
-  height: 100%;
   gap: var(--space-5);
-  justify-content: center;
 }
 
 .agenda-list {

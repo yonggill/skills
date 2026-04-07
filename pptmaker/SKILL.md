@@ -51,55 +51,80 @@ Read `templates/base.html`, `references/revealjs-api.md`.
 8. Replace `{{TRANSITION}}` (default: `slide`)
 9. Write final HTML file as `{topic-slug}-presentation.html`
 
-## Phase 5: Quality Review (Automatic)
+## Phase 5: Visual Quality Review (Playwright-based, Automatic)
 
-After Phase 4 completes, automatically launch parallel subagents to review and fix every slide. Do NOT skip this phase.
+After Phase 4 completes, verify every slide by **rendering it in a real browser and examining screenshots**. Code-only review cannot catch layout breaks, text overflow, alignment issues, or visual imbalance. Do NOT skip this phase.
 
-**Batch strategy:** Group slides by 10-15 per agent. For a 72-slide deck, dispatch 5-6 agents in parallel.
+### Step 1: Capture Screenshots
 
-Each agent receives:
+Start a local HTTP server and use Playwright to screenshot every slide:
+
+```javascript
+// 1. Start server
+// Run: python3 -m http.server 8765 (in the directory containing the HTML file)
+
+// 2. Capture all slides via Playwright browser_run_code
+async (page) => {
+  await page.goto('http://localhost:8765/{filename}.html');
+  await page.waitForTimeout(2000);
+  const total = await page.evaluate(() => Reveal.getTotalSlides());
+  for (let i = 0; i < total; i++) {
+    await page.evaluate((idx) => Reveal.slide(idx), i);
+    await page.waitForTimeout(300);
+    await page.screenshot({
+      path: `ppt-review-screenshots/slide-${String(i+1).padStart(2,'0')}.png`
+    });
+  }
+}
+```
+
+Set viewport to `1280x720` before capturing. Save screenshots to a `ppt-review-screenshots/` directory.
+
+### Step 2: Visual Review with Parallel Agents
+
+Dispatch parallel subagents (15-18 slides per agent). Each agent receives:
+- Screenshot file paths for its range
 - The HTML file path
-- Its assigned slide range (e.g., slides 1-12)
-- The design system reference path
-- The layouts/components reference paths
+- Design system + layout reference paths
 
-**Each agent must Read the HTML AND the relevant layout/component CSS definitions, then for each slide in its range check:**
+**Each agent must READ each screenshot PNG file (Claude is multimodal) and check:**
 
-### A. Structure Checks
-1. **Layout correctness** — Does the `<section>` use the correct layout class? Are all required child elements present per `templates/layouts.md`?
-2. **Layout-component compatibility** — Is every child component compatible with the parent layout's alignment model? Specifically:
-   - `layout-simple` (center-aligned) must NOT contain `callout`, `layout-code`, or any left-aligned block component. Use only centered text elements.
-   - `layout-title` and `layout-section-divider` must NOT contain grid/flex child containers.
-   - `layout-text-image` must have exactly 2 direct children: `.text-col` and `.image-col`.
-3. **CSS class existence** — Does every class used in HTML have a corresponding CSS rule in the `<style>` block? Grep the file to verify. Missing CSS = invisible or broken rendering.
+1. **Text overflow/cutoff** — Any text running off the slide edge or clipped by a container?
+2. **Alignment** — Elements centered when they should be? Columns equal width? Grid items aligned?
+3. **Spacing/cramping** — Enough breathing room? Elements too close together or too spread out?
+4. **Readability** — Text large enough for a projected screen? Contrast sufficient?
+5. **Layout integrity** — Grid/flex layouts rendering correctly? Overlapping elements?
+6. **Korean text wrapping** — Words breaking mid-syllable? Awkward line breaks in constrained-width elements?
+7. **Font rendering** — Correct fonts loading? Any fallback to system serif/sans?
+8. **Color harmony** — Colors matching the selected palette? Any jarring or unintended colors?
+9. **Component rendering** — Cards, KPI grids, timelines, process flows displaying as designed?
+10. **Professional polish** — Would this look good projected on a screen in front of 50 people?
 
-### B. Content Checks
-4. **Content density** — Max 75 words body text per slide, max 5 bullet points, max 10 words per bullet.
-5. **Typography hierarchy** — Heading sizes > body. Max 3 font sizes per slide.
-6. **Fragment usage** — Purposeful, not on every element.
+**For each visual issue:** The agent reads the HTML, locates the corresponding slide `<section>`, and Edits it to fix the problem. Common fixes:
+- Add `word-break: keep-all` for Korean text wrapping
+- Adjust `max-width` or shorten text for overflow
+- Remove conflicting inline styles
+- Add missing `margin: 0 auto` on centered elements with `max-width`
+- Fix layout class mismatches
 
-### C. Visual Rendering Checks
-7. **Korean text wrapping** — For text inside `max-width` constrained elements, check that Korean words don't break mid-word. Add `word-break: keep-all` where needed. Ensure long sentences fit without awkward line breaks — shorten text or widen container.
-8. **Color consistency** — All colors via `var()` tokens. No hardcoded colors except code background `#1E1E2E`.
-9. **Inline style conflicts** — Check that inline `style` attributes don't conflict with the layout class CSS (e.g., `text-align: left` inside a `text-align: center` layout). Remove conflicting inline styles.
-10. **Visual balance** — Sufficient whitespace? Elements aligned to grid?
+### Step 3: Re-capture and Verify (if fixes were made)
 
-### D. Accessibility & Metadata
-11. **Image slots** — `data-image-slot`, `data-image-desc`, `alt` attributes present.
-12. **Accessibility** — Alt text present. No color-only meaning. `aria-hidden` on decorative elements.
-13. **Speaker notes** — Section dividers and exercise slides have `<aside class="notes">`.
+After agents complete, if fixes were applied:
+1. Re-run Playwright to screenshot only the fixed slides
+2. Read the new screenshots to confirm issues are resolved
+3. If issues persist, fix and re-verify (max 2 iterations)
 
-**Agent output:** For each issue found, the agent directly Edits the HTML file to fix it. If a fix requires judgment (e.g., restructuring content), the agent describes the issue and proposed fix in its output for human review.
-
-**After all agents complete:** Report a summary table:
+### Step 4: Report
 
 ```
-슬라이드 품질 검증 완료:
-| 범위 | 검토 | 수정 | 주요 변경 |
-|------|------|------|----------|
-| 1-12 | 12  | 3    | 타이포 수정, fragment 추가 |
-| ...  | ... | ...  | ...      |
+슬라이드 시각 검증 완료:
+| 범위 | 검토 | 이슈 | 수정 | 주요 변경 |
+|------|------|------|------|----------|
+| 1-18 | 18  | 3    | 3    | 텍스트 오버플로 수정, 정렬 보정 |
+| ...  | ... | ...  | ...  | ...      |
 ```
+
+Kill the HTTP server after review is complete.
 
 ## Image Management
 

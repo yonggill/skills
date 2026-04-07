@@ -36,8 +36,6 @@ Full-bleed primary-color background. Left-aligned with large hero heading, eyebr
   justify-content: center;
   align-items: flex-start;
   padding: 4rem 5rem;
-  box-sizing: border-box;
-  height: 100%;
   gap: var(--space-5);
 }
 
@@ -117,8 +115,6 @@ Full-bleed primary-color background with a large ghost number, section title, an
   align-items: center;
   text-align: center;
   padding: 4rem 5rem;
-  box-sizing: border-box;
-  height: 100%;
   gap: var(--space-4);
   position: relative;
 }
@@ -225,8 +221,6 @@ Two-column grid: text on the left, image on the right. Includes a reversed varia
   gap: var(--gap-xl);
   padding: 3rem 4rem;
   align-items: center;
-  box-sizing: border-box;
-  height: 100%;
 }
 
 /* Reversed layout — RTL trick keeps DOM order semantic */
@@ -352,9 +346,8 @@ Side-by-side comparison of two options, approaches, or entities. Each column has
 .layout-two-col {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   padding: 2.5rem 3.5rem;
-  box-sizing: border-box;
-  height: 100%;
   gap: var(--space-4);
 }
 
@@ -493,9 +486,8 @@ Three equal-width feature cards in a single row, each with an icon, title, and d
 .layout-three-col {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   padding: 2.5rem 3rem;
-  box-sizing: border-box;
-  height: 100%;
   gap: var(--space-6);
 }
 
@@ -516,6 +508,13 @@ Three equal-width feature cards in a single row, each with an icon, title, and d
   grid-template-columns: repeat(3, 1fr);
   gap: var(--gap-md);
   flex: 1;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.feature-card {
+  min-width: 0;
+  overflow: hidden;
 }
 ```
 
@@ -558,8 +557,6 @@ Full-bleed background image set via `data-background-image` on the `<section>`. 
   align-items: flex-start;
   justify-content: flex-end;
   padding: 0;
-  height: 100%;
-  box-sizing: border-box;
 }
 
 .overlay-scrim {
@@ -653,8 +650,6 @@ Centered full-slide quote with large decorative quotation mark, attributed to a 
   align-items: center;
   justify-content: center;
   padding: 4rem 6rem;
-  box-sizing: border-box;
-  height: 100%;
 }
 
 .quote-block {
@@ -810,9 +805,8 @@ Four grid variants for arranging `.kpi-card` components (defined in `components.
 .layout-kpi {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   padding: 2.5rem 3rem;
-  box-sizing: border-box;
-  height: 100%;
   gap: var(--space-5);
 }
 
@@ -943,9 +937,8 @@ Two orientations: horizontal for sequential milestones across the top of a slide
 .layout-timeline {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   padding: 2.5rem 3rem;
-  box-sizing: border-box;
-  height: 100%;
   gap: var(--space-6);
 }
 
@@ -1119,11 +1112,9 @@ Horizontal sequence of numbered steps connected by arrows. For up to 5 steps.
 .layout-process {
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
   padding: 2.5rem 3rem;
-  box-sizing: border-box;
-  height: 100%;
   gap: var(--space-8);
-  justify-content: center;
 }
 
 .process-flow {
@@ -1132,6 +1123,9 @@ Horizontal sequence of numbered steps connected by arrows. For up to 5 steps.
   align-items: flex-start;
   justify-content: center;
   gap: var(--space-2);
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .process-step {
@@ -1141,6 +1135,8 @@ Horizontal sequence of numbered steps connected by arrows. For up to 5 steps.
   align-items: center;
   text-align: center;
   gap: var(--space-3);
+  min-width: 0;
+  overflow: hidden;
 }
 
 .process-icon {
@@ -1170,6 +1166,8 @@ Horizontal sequence of numbered steps connected by arrows. For up to 5 steps.
   color: var(--color-text-secondary);
   max-width: 140px;
   margin: 0;
+  word-break: keep-all;
+  overflow-wrap: break-word;
 }
 
 .process-arrow {

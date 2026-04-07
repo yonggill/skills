@@ -152,7 +152,9 @@ Full-bleed primary-color background with a large ghost number, section title, an
   line-height: var(--lh-relaxed);
   color: rgba(255, 255, 255, 0.70);
   max-width: 600px;
-  margin: 0;
+  margin: 0 auto;
+  text-align: center;
+  word-break: keep-all;
   position: relative;
   z-index: 1;
 }

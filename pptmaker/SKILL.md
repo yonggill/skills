@@ -63,18 +63,31 @@ Each agent receives:
 - The design system reference path
 - The layouts/components reference paths
 
-**Each agent must Read the HTML, then for each slide in its range check:**
+**Each agent must Read the HTML AND the relevant layout/component CSS definitions, then for each slide in its range check:**
 
-1. **Layout correctness** — Does the `<section>` use the correct layout class? Are all required child elements present (e.g., `.title-eyebrow`, `.title-main` for layout-title)?
-2. **Typography hierarchy** — Are heading sizes larger than body? Are labels using `--type-label`? No more than 3 font sizes per slide?
-3. **Content density** — Max 75 words body text per slide, max 5 bullet points, max 10 words per bullet?
-4. **Visual balance** — Does the slide have sufficient whitespace? Are elements aligned to the grid?
-5. **Fragment usage** — Are fragments used purposefully (not on every element)?
-6. **Color consistency** — All colors via `var()` tokens? No hardcoded colors except code backgrounds?
-7. **Image slots** — Do image slots have `data-image-slot`, `data-image-desc`, and `alt` attributes?
-8. **Accessibility** — Alt text present? Sufficient contrast? No color-only meaning?
-9. **Speaker notes** — Do section dividers and exercise slides have `<aside class="notes">`?
-10. **Korean text quality** — Natural phrasing? No truncated sentences? Proper spacing?
+### A. Structure Checks
+1. **Layout correctness** — Does the `<section>` use the correct layout class? Are all required child elements present per `templates/layouts.md`?
+2. **Layout-component compatibility** — Is every child component compatible with the parent layout's alignment model? Specifically:
+   - `layout-simple` (center-aligned) must NOT contain `callout`, `layout-code`, or any left-aligned block component. Use only centered text elements.
+   - `layout-title` and `layout-section-divider` must NOT contain grid/flex child containers.
+   - `layout-text-image` must have exactly 2 direct children: `.text-col` and `.image-col`.
+3. **CSS class existence** — Does every class used in HTML have a corresponding CSS rule in the `<style>` block? Grep the file to verify. Missing CSS = invisible or broken rendering.
+
+### B. Content Checks
+4. **Content density** — Max 75 words body text per slide, max 5 bullet points, max 10 words per bullet.
+5. **Typography hierarchy** — Heading sizes > body. Max 3 font sizes per slide.
+6. **Fragment usage** — Purposeful, not on every element.
+
+### C. Visual Rendering Checks
+7. **Korean text wrapping** — For text inside `max-width` constrained elements, check that Korean words don't break mid-word. Add `word-break: keep-all` where needed. Ensure long sentences fit without awkward line breaks — shorten text or widen container.
+8. **Color consistency** — All colors via `var()` tokens. No hardcoded colors except code background `#1E1E2E`.
+9. **Inline style conflicts** — Check that inline `style` attributes don't conflict with the layout class CSS (e.g., `text-align: left` inside a `text-align: center` layout). Remove conflicting inline styles.
+10. **Visual balance** — Sufficient whitespace? Elements aligned to grid?
+
+### D. Accessibility & Metadata
+11. **Image slots** — `data-image-slot`, `data-image-desc`, `alt` attributes present.
+12. **Accessibility** — Alt text present. No color-only meaning. `aria-hidden` on decorative elements.
+13. **Speaker notes** — Section dividers and exercise slides have `<aside class="notes">`.
 
 **Agent output:** For each issue found, the agent directly Edits the HTML file to fix it. If a fix requires judgment (e.g., restructuring content), the agent describes the issue and proposed fix in its output for human review.
 

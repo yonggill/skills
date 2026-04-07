@@ -487,6 +487,23 @@ Use these for CSS Grid and Flexbox `gap` properties on layout containers.
 
 ## 4. Slide Design Rules
 
+### 4.0 Korean Text Global Rules
+
+Korean text requires special CSS handling to prevent mid-word line breaks and alignment issues. Apply these rules globally in every generated presentation:
+
+```css
+/* Add to the global style block — applies to all slide text */
+.reveal .slides {
+  word-break: keep-all;    /* Prevent breaking Korean words mid-syllable */
+}
+```
+
+**Why:** Korean uses no spaces between syllables within a word. Without `word-break: keep-all`, browsers break "아이디어가" into "아이\n디어가" at narrow widths.
+
+**Additional rules for constrained-width elements** (any element with `max-width`):
+- Always set `margin: 0 auto` on centered elements with `max-width` to ensure horizontal centering
+- Always set `text-align: center` explicitly if the parent layout is centered — do not rely on inheritance when `max-width` is set
+
 ### 4.1 Text Density Limits
 
 These are hard limits. Exceeding them degrades readability at presentation size. When content exceeds these limits, split into additional slides.

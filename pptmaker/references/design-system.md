@@ -574,6 +574,8 @@ Never convey meaning through color alone. Always pair color with at least one ad
 - Blue text = link, black text = plain (without underline or other indicator)
 - Orange = warning state (without text label)
 
+Always include the Visual Polish Rules (Section 7) CSS in every presentation. These rules transform flat HTML into a polished, projection-ready design.
+
 ---
 
 ## 5. reveal.js Variable Wiring
@@ -757,6 +759,106 @@ Is the audience wearing suits?
 - The Creative (Coral) palette's warm background (`#FFFBF5`) may feel too informal for purely financial slides. In that case, substitute `--color-background: #FFFFFF` and `--color-surface: #FFF7ED` to cool it slightly without changing the rest of the palette.
 - When embedding live demos or browser windows in slides, always use the Dark Charcoal palette — it minimizes screen glare and reduces audience eye fatigue under bright projectors.
 - For bilingual or CJK (Chinese/Japanese/Korean) presentations, Inter (Pairing 1) is the safest choice because it has broad Unicode coverage and degrades gracefully to system fonts for characters outside its range.
+
+---
+
+## 7. Visual Polish Rules
+
+These CSS rules MUST be included in every generated presentation to ensure visual quality. Add them to the `<style>` block after layout and component CSS.
+
+### 7.1 Content Slide Accent
+
+Every content slide gets a subtle top border to create visual structure:
+
+```css
+.reveal .slides section:not(.layout-title):not(.layout-section-divider):not(.layout-simple) {
+  border-top: 3px solid var(--color-primary);
+}
+```
+
+### 7.2 Card Shadows
+
+All card-like components get subtle elevation:
+
+```css
+.feature-card, .kpi-card, .col-card, .callout, .highlight-box, .quote-component {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+```
+
+### 7.3 Heading Accent
+
+Slide headings get an underline accent for visual weight:
+
+```css
+.slide-heading {
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+```
+
+### 7.4 KPI Card Gradient Bar
+
+KPI cards get a gradient accent bar at the top:
+
+```css
+.kpi-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  border-radius: 0.75rem 0.75rem 0 0;
+}
+```
+
+### 7.5 Process/Icon Shadows
+
+Circular icons in process flows and numbered lists get colored shadows:
+
+```css
+.icon-list__num, .process-icon {
+  box-shadow: 0 3px 12px color-mix(in srgb, var(--color-primary) 30%, transparent);
+}
+```
+
+### 7.6 Section Divider Enhancement
+
+Section dividers get a subtle radial gradient overlay for depth:
+
+```css
+.layout-section-divider::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 70% 50%, rgba(255,255,255,0.08) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+```
+
+### 7.7 Image Placeholder Strategy
+
+When real images are unavailable, use SVG diagrams instead of gradient `<div>` elements:
+
+```html
+<!-- BAD: gradient placeholder -->
+<div style="background: linear-gradient(...)">Text</div>
+
+<!-- GOOD: SVG diagram placeholder -->
+<svg viewBox="0 0 400 300" style="width:100%; min-height:200px;">
+  <rect width="400" height="300" rx="12" fill="var(--color-primary)" opacity="0.08"/>
+  <!-- Add meaningful shapes: circles, arrows, icons -->
+  <text x="200" y="155" text-anchor="middle" fill="var(--color-primary)" 
+        font-size="14" font-weight="700">Diagram Title</text>
+</svg>
+```
+
+SVG placeholders should:
+- Use palette colors via direct hex values (#7C3AED, #06B6D4, etc.)
+- Include simple, meaningful shapes that relate to the content
+- Have rounded container (`rx="12"`)
+- Use `font-family="Sora, sans-serif"` to match the presentation font
 
 ---
 

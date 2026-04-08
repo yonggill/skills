@@ -8,6 +8,7 @@ General-purpose skills for Claude Code.
 |-------|-------------|
 | [pscan](pscan/) | Project context scanner — analyzes source code, architecture, and structure to generate a comprehensive context document |
 | [pptmaker](pptmaker/) | reveal.js 기반 프레젠테이션 생성 — 발표 유형별 구조, 디자인 시스템, 레이아웃/컴포넌트 적용하여 CDN 기반 단일 HTML 출력 |
+| [generate-spec](generate-spec/) | 프로젝트 기획 명세 생성 — 6단계 파이프라인(계획서→메뉴→페이지→명세→기능→기능명세)으로 템플릿 기반 기획 산출물 생성 |
 
 ## Installation
 

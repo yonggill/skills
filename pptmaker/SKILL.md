@@ -205,6 +205,21 @@ After agents complete, if fixes were applied:
 
 Kill the HTTP server after review is complete.
 
+## Phase 6: PDF Export (Automatic)
+
+After Phase 5 completes, automatically generate a PDF version using decktape.
+
+```bash
+npx decktape reveal http://localhost:8765/{filename}.html {filename}.pdf \
+  --size 1280x720 \
+  --pdf-title "{presentation title}" \
+  --pdf-author "{author}"
+```
+
+This produces a high-quality PDF with one page per slide, matching the browser rendering exactly. The PDF is saved alongside the HTML file.
+
+Kill the HTTP server after PDF export is complete.
+
 ## Image Management
 
 After generation, if the user requests image changes:

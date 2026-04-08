@@ -1,6 +1,6 @@
 ---
 name: pptmaker
-version: 0.1.1
+version: 0.1.2
 description: Use when creating presentations, pitch decks, slide decks, or any reveal.js-based HTML presentation. Triggers on "PPT 만들어", "프레젠테이션", "발표 자료", "pitch deck", "slide deck", "reveal.js presentation", or any request to create slides for a talk, meeting, or demo.
 ---
 
@@ -90,8 +90,17 @@ These rules apply during Phase 4. Violating them causes layout breaks.
 - Every `<section>` gets its full-height layout class — no bare sections
 - Never set `height: 100%` on any layout class — the global override handles it
 - Never use inline `style="display: grid"` or `style="display: flex"` — use layout classes only
+- **CRITICAL: Dark/colored palettes require explicit background on every slide.** `disableLayout: true` prevents reveal.js from applying `--r-background-color` to slide backgrounds. Add `data-background-color="{hex}"` to every `<section>` element. Also add CSS fallbacks:
+  ```css
+  html, body, .reveal-viewport { background: {bg-hex} !important; }
+  .reveal .slides section { background: var(--color-background); }
+  ```
 
 ### Overflow Prevention
+- **Add universal `box-sizing: border-box`** to all slide elements (prevents padding overflow in grids):
+  ```css
+  .reveal .slides section, .reveal .slides section *, .reveal .slides section *::before, .reveal .slides section *::after { box-sizing: border-box; }
+  ```
 - Every grid/flex child must have `min-width: 0`
 - Grid gaps: max `1rem` for 3+ columns, max `1.5rem` for 2 columns
 - Total content width (padding + gaps + content) must not exceed 1280px
@@ -137,28 +146,35 @@ After Phase 4 completes, verify every slide by **rendering it in a real browser 
 
 ### Step 1: Capture Screenshots
 
-Start a local HTTP server and use Playwright to screenshot every slide:
+**IMPORTANT: Set viewport BEFORE navigating.** The viewport must match the slide dimensions (1280x720) for accurate rendering. Using browser default (e.g. 800x600) causes layout mismatches and false positives during review.
 
-```javascript
-// 1. Start server
-// Run: python3 -m http.server 8765 (in the directory containing the HTML file)
+1. Start HTTP server from the directory containing the HTML file:
+   ```bash
+   python3 -m http.server 8765
+   ```
 
-// 2. Capture all slides via Playwright browser_run_code
-async (page) => {
-  await page.goto('http://localhost:8765/{filename}.html');
-  await page.waitForTimeout(2000);
-  const total = await page.evaluate(() => Reveal.getTotalSlides());
-  for (let i = 0; i < total; i++) {
-    await page.evaluate((idx) => Reveal.slide(idx), i);
-    await page.waitForTimeout(300);
-    await page.screenshot({
-      path: `ppt-review-screenshots/slide-${String(i+1).padStart(2,'0')}.png`
-    });
-  }
-}
-```
+2. Set viewport to slide dimensions via `browser_resize`:
+   ```
+   browser_resize(width: 1280, height: 720)
+   ```
 
-Set viewport to `1280x720` before capturing. Save screenshots to a `ppt-review-screenshots/` directory.
+3. Capture all slides via `browser_run_code`:
+   ```javascript
+   async (page) => {
+     await page.goto('http://localhost:8765/{filename}.html');
+     await page.waitForTimeout(2000);
+     const total = await page.evaluate(() => Reveal.getTotalSlides());
+     for (let i = 0; i < total; i++) {
+       await page.evaluate((idx) => Reveal.slide(idx), i);
+       await page.waitForTimeout(300);
+       await page.screenshot({
+         path: `ppt-review-screenshots/slide-${String(i+1).padStart(2,'0')}.png`
+       });
+     }
+   }
+   ```
+
+Save screenshots to a `ppt-review-screenshots/` directory.
 
 ### Step 2: Visual Review with Parallel Agents
 

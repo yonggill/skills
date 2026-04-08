@@ -75,6 +75,55 @@
     /* ===== Layouts ===== */
     {{LAYOUT_CSS}}
 
+    /* ===== Layout Centering (disableLayout:true requires explicit centering) ===== */
+    .layout-title {
+      display: flex !important; flex-direction: column;
+      justify-content: center; align-items: flex-start;
+      height: 100%; padding: 3rem 4rem; gap: var(--space-5); position: relative;
+    }
+    .layout-section-divider {
+      display: flex !important; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      height: 100%; padding: 3rem 4rem; gap: var(--space-4); position: relative;
+    }
+    .layout-section-divider h2, .layout-section-divider p { text-align: center; }
+    .layout-simple {
+      display: flex !important; flex-direction: column;
+      justify-content: center; align-items: center; text-align: center;
+      height: 100%; padding: 3rem 4rem; gap: var(--space-5);
+    }
+    .layout-quote {
+      display: flex !important; flex-direction: column;
+      justify-content: center; align-items: center;
+      height: 100%; padding: 3rem 4rem;
+    }
+    .layout-text, .layout-three-col, .layout-kpi, .layout-process, .layout-agenda,
+    .layout-two-col, .layout-before-after {
+      display: flex !important; flex-direction: column;
+      justify-content: center; height: 100%; gap: 1rem;
+    }
+    .layout-text-image, .layout-image-text {
+      display: grid !important; grid-template-columns: 1fr 1fr;
+      gap: 1.5rem; align-items: center; height: 100%; padding: 2rem 3rem;
+    }
+    .layout-code {
+      display: flex !important; flex-direction: column;
+      justify-content: flex-start; height: 100%; gap: 1rem; padding: 1.5rem 2rem;
+    }
+
+    /* ===== Overflow Guards ===== */
+    .three-col-grid, .kpi-grid-1x4, .kpi-grid-2x2, .kpi-grid-1x3, .kpi-grid-featured,
+    .col-header, .col-body, .agenda-list, .code-showcase-grid, .process-flow {
+      width: 100%; min-width: 0; overflow: hidden;
+    }
+    .feature-card, .kpi-card, .col-card, .col-label,
+    .code-pane, .code-result-pane, .process-step, .team-card, .pricing-card {
+      min-width: 0; overflow: hidden;
+    }
+    .process-step { flex: 1 1 0; }
+    .process-arrow { flex: 0 0 auto; font-size: 1rem; }
+    .code-showcase-grid { grid-template-columns: 1fr 1fr; }
+
     /* ===== Components ===== */
     {{COMPONENT_CSS}}
   </style>
@@ -103,7 +152,7 @@
     transition: '{{TRANSITION}}',
     width: 1280,
     height: 720,
-    margin: 0.04,
+    margin: 0,
     plugins: [RevealZoom, RevealNotes, RevealHighlight{{EXTRA_PLUGIN_NAMES}}]
   });
 </script>

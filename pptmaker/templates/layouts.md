@@ -364,6 +364,7 @@ Side-by-side comparison of two options, approaches, or entities. Each column has
   gap: 1rem;
   width: 100%;
   min-width: 0;
+  overflow: hidden;
 }
 
 .col-body {
@@ -372,6 +373,7 @@ Side-by-side comparison of two options, approaches, or entities. Each column has
   gap: 1rem;
   width: 100%;
   min-width: 0;
+  overflow: hidden;
 }
 
 .col-label {
@@ -823,6 +825,8 @@ Four grid variants for arranging `.kpi-card` components (defined in `components.
   grid-template-rows: repeat(2, 1fr);
   gap: 1rem;
   width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 /* 1×3 — three equal columns, single row */
@@ -831,6 +835,8 @@ Four grid variants for arranging `.kpi-card` components (defined in `components.
   grid-template-columns: repeat(3, 1fr);
   gap: 1rem;
   width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 /* 1×4 — four compact columns, single row */
@@ -839,6 +845,8 @@ Four grid variants for arranging `.kpi-card` components (defined in `components.
   grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 /* Featured — one hero card spanning 2 rows + 2 supporting cards */
@@ -848,6 +856,8 @@ Four grid variants for arranging `.kpi-card` components (defined in `components.
   grid-template-rows: repeat(2, 1fr);
   gap: 1rem;
   width: 100%;
+  min-width: 0;
+  overflow: hidden;
 }
 
 .kpi-grid-featured > :first-child {
@@ -1518,6 +1528,7 @@ Three-column pricing card grid with a featured/highlighted tier. The featured ca
   gap: 1rem;
   width: 100%;
   min-width: 0;
+  overflow: hidden;
   align-items: center;
 }
 

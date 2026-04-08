@@ -22,11 +22,24 @@ Read `references/pitch-structures.md`. Select the matching scenario structure. D
 
 **Present the outline to the user and wait for approval before proceeding.**
 
-## Phase 3: Design Application
+## Phase 2.5: Slide Design Spec
 
-Read `references/design-system.md`, `templates/layouts.md`, `templates/components.md`.
+After the outline is approved, create a detailed design spec for every slide.
 
-Map each slide to a layout and component set. Select palette + font pairing based on tone:
+1. Read `references/slide-design-guide.md`
+2. For each slide in the approved outline, write a full spec block following the guide's format:
+   - Role, Layout, Components
+   - Content Zones table (position, element, content, density)
+   - Visual Design table (element, property, token value, rationale)
+   - Eye path, emphasis technique
+   - Image/Icon plan, Animation plan
+   - Text Draft (actual text for every zone)
+   - Speaker Notes
+   - Flow Context (previous/next slide connection)
+3. Write the complete spec to `{topic}-slide-specs.md` in the same directory as the presentation
+4. **Present the spec file to the user for review before proceeding.**
+
+Select palette + font pairing based on tone (applies to all specs):
 
 | Tone | Palette | Font Pairing |
 |------|---------|-------------|
@@ -36,6 +49,20 @@ Map each slide to a layout and component set. Select palette + font pairing base
 | Consulting / Academic | Minimal (Teal) | Inter |
 | Creative / Marketing | Creative (Coral) | Fraunces + Inter |
 | Education / Friendly | Startup (Violet) | Sora + Nunito Sans |
+
+## Phase 3: Assembly (Spec → HTML)
+
+Phase 3 does NOT make design decisions. It mechanically assembles HTML from the approved slide specs.
+
+Read `{topic}-slide-specs.md`, `references/design-system.md`, `templates/layouts.md`, `templates/components.md`.
+
+For each slide spec:
+1. Apply the specified Layout class to `<section>`
+2. Build Content Zones as specified (exact HTML elements, classes, content)
+3. Apply Visual Design table values as CSS (inline or via existing classes)
+4. Insert Text Draft content verbatim
+5. Add Speaker Notes as `<aside class="notes">`
+6. Apply Animation directives as fragment classes
 
 ## Phase 4: Generation
 

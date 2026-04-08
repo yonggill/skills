@@ -1,5 +1,6 @@
 ---
 name: pptmaker
+version: 0.1.1
 description: Use when creating presentations, pitch decks, slide decks, or any reveal.js-based HTML presentation. Triggers on "PPT 만들어", "프레젠테이션", "발표 자료", "pitch deck", "slide deck", "reveal.js presentation", or any request to create slides for a talk, meeting, or demo.
 ---
 

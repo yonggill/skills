@@ -1,21 +1,30 @@
 ---
 name: pptmaker
-version: 0.1.2
-description: Use when creating presentations, pitch decks, slide decks, or any reveal.js-based HTML presentation. Triggers on "PPT 만들어", "프레젠테이션", "발표 자료", "pitch deck", "slide deck", "reveal.js presentation", or any request to create slides for a talk, meeting, or demo.
+version: 0.2.0
+description: Use when creating presentations, pitch decks, or slide decks. Generates a Gamma-optimized markdown prompt file to paste into gamma.app. Triggers on "PPT 만들어", "프레젠테이션", "발표 자료", "pitch deck", "slide deck", or any request to create slides for a talk, meeting, or demo.
 ---
 
-# reveal.js Presentation Generator
+# Gamma Presentation Prompt Generator
 
-Generate professional reveal.js HTML presentations via a 4-phase pipeline. Each phase loads only the reference files it needs.
+Generate a Gamma-optimized markdown file via a 4-phase pipeline. The output is a `.md` file ready to paste into [Gamma](https://gamma.app) for high-quality presentation generation.
+
+**Output deliverables:**
+1. `{topic}-gamma-prompt.md` — Gamma에 붙여넣을 최종 프롬프트
+2. `{topic}-speaker-notes.md` — 슬라이드별 발표자 노트 (별도 파일)
+
+---
 
 ## Phase 1: Analysis
 
 Parse the user's request and determine:
 - **Presentation type:** investor pitch / internal (status, proposal, QBR) / conference (lightning, standard, workshop) / sales (PAS, showcase, case study) / educational (lecture, tutorial)
 - **Audience, duration, tone**
+- **Slide count target** (Gamma는 한 번에 최대 30장 생성)
 - If information is missing, ask — but keep questions minimal
 
 No files loaded. Use context clues to classify.
+
+---
 
 ## Phase 2: Structuring
 
@@ -23,223 +32,196 @@ Read `references/pitch-structures.md`. Select the matching scenario structure. D
 
 **Present the outline to the user and wait for approval before proceeding.**
 
-## Phase 2.5: Slide Design Spec
+---
 
-After the outline is approved, create a detailed design spec for every slide.
+## Phase 3: Content Design Spec
 
-1. Read `references/slide-design-guide.md`
-2. For each slide in the approved outline, write a full spec block following the guide's format:
-   - Role, Layout, Components
-   - Content Zones table (position, element, content, density)
-   - Visual Design table (element, property, token value, rationale)
-   - Eye path, emphasis technique
-   - Image/Icon plan, Animation plan
-   - Text Draft (actual text for every zone)
-   - Speaker Notes
-   - Flow Context (previous/next slide connection)
-3. Write the complete spec to `{topic}-slide-specs.md` in the same directory as the presentation
+After the outline is approved, create a detailed content spec for every slide.
+
+1. Read `references/slide-design-guide.md` — **콘텐츠 설계 원칙만 추출**. HTML/CSS/레이아웃 클래스 관련 내용은 무시.
+2. For each slide in the approved outline, write a content spec block:
+
+```
+### Slide N: {제목}
+
+**Role:** 이 슬라이드의 역할과 핵심 메시지 (1줄)
+**Visual Type:** 비주얼 유형 — 텍스트, 비교, 카드 그리드, 차트, 타임라인, 인용구, 이미지+텍스트 등
+**Density:** 불릿 수, 단어 수 등 정량적 제한
+
+**Text Draft:**
+- 제목: ...
+- 부제/소제목: ... (선택)
+- 본문: 불릿 또는 짧은 단락
+- 강조 텍스트: ... (선택)
+
+**Image Suggestion:** Gamma AI가 생성할 이미지 설명 (SPLICE 형식 권장)
+- Setting(배경) / People(인물) / Lighting(조명) / Immediacy(분위기) / Composition(구도) / Execution(스타일)
+- 차트/그래프인 경우: 차트 유형 + 데이터 명시
+
+**Speaker Notes:** (3-5줄)
+- 슬라이드 텍스트를 반복하지 않음
+- 보충 설명, 실제 사례, 데이터 출처
+- 전환 멘트 (다음 슬라이드로의 브릿지)
+- 시간 가이드
+
+**Flow Context:**
+- 이전 슬라이드와의 연결: ...
+- 다음 슬라이드로의 전환: ...
+```
+
+3. Write the complete spec to `{topic}-slide-specs.md`
 4. **Present the spec file to the user for review before proceeding.**
 
-Select palette + font pairing based on tone (applies to all specs):
+### Content Design Principles
 
-| Tone | Palette | Font Pairing |
-|------|---------|-------------|
-| Corporate / Finance | Corporate (Navy) | Playfair Display + Source Sans 3 |
-| Startup / Product | Startup (Violet) | Plus Jakarta Sans + DM Sans |
-| Technical / Dev | Dark (Charcoal) | Inter |
-| Consulting / Academic | Minimal (Teal) | Inter |
-| Creative / Marketing | Creative (Coral) | Fraunces + Inter |
-| Education / Friendly | Startup (Violet) | Sora + Nunito Sans |
+Phase 3에서 적용할 핵심 원칙 (slide-design-guide.md에서 발췌):
 
-## Phase 3: Assembly (Spec → HTML)
+- **슬라이드당 핵심 메시지 1개** — 여러 메시지를 섞지 않음
+- **밀도 상한:** 75단어, 6불릿 이내, 불릿당 30단어 이내
+- **같은 비주얼 유형 3연속 금지** — 텍스트→차트→카드→비교 등 다양하게
+- **밀도 교차:** 데이터 슬라이드 뒤에는 가벼운 슬라이드 배치
+- **강조 포인트 1개:** 색상/크기/위치 강조 중 택 1
+- **이론 → 구조 → 실습 순서 유지**
 
-Phase 3 does NOT make design decisions. It mechanically assembles HTML from the approved slide specs.
+---
 
-Read `{topic}-slide-specs.md`, `references/design-system.md`, `templates/layouts.md`, `templates/components.md`.
+## Phase 4: Gamma Prompt Export
 
-For each slide spec:
-1. Apply the specified Layout class to `<section>`
-2. Build Content Zones as specified (exact HTML elements, classes, content)
-3. Apply Visual Design table values as CSS (inline or via existing classes)
-4. Insert Text Draft content verbatim
-5. Add Speaker Notes as `<aside class="notes">`
-6. Apply Animation directives as fragment classes
+Approved spec을 Gamma에 붙여넣을 수 있는 깨끗한 마크다운 파일로 변환.
 
-## Phase 4: Generation
+Read `references/gamma-guide.md` for Gamma-specific formatting rules.
 
-**Before generating, read the Generation Rules section below. Every rule is mandatory.**
+### Step 1: Extract & Transform
 
-Read `templates/base.html`, `references/revealjs-api.md`.
+`{topic}-slide-specs.md`에서 순수 콘텐츠만 추출:
 
-1. Start from base.html boilerplate
-2. Replace `{{FONT_LINKS}}` with selected Google Fonts `<link>` tags
-3. Replace `{{DESIGN_TOKENS}}` with selected palette CSS variables + typography tokens
-4. Replace `{{LAYOUT_CSS}}` with CSS for used layouts only
-5. Replace `{{COMPONENT_CSS}}` with CSS for used components only
-6. Build each `<section>` with mapped layout class, user content, and appropriate fragments/transitions
-7. For image slots: WebSearch for relevant stock images (Unsplash/Pexels), embed URLs with `data-image-slot` and `data-image-desc` markers
-8. Replace `{{TRANSITION}}` (default: `slide`)
-9. Write final HTML file as `{topic-slug}-presentation.html`
+1. **파일 첫 줄 = 타이틀 슬라이드 시작** — 프론트매터, 메타데이터, 문서 제목 없이 바로 첫 슬라이드
+2. **`---`로 슬라이드 구분** — 각 슬라이드/카드 사이에 `---` 삽입
+3. **Text Draft만 추출** — Role, Visual Type, Density, Flow Context 등 스펙 라벨 모두 제거
+4. **Speaker Notes 분리** — `{topic}-speaker-notes.md`로 별도 저장
 
-## Generation Rules (MANDATORY)
+### Step 2: Gamma Optimization
 
-These rules apply during Phase 4. Violating them causes layout breaks.
+추출된 마크다운에 다음 보정 적용:
 
-### reveal.js Compatibility
-- Set `center: false` in Reveal.initialize — all centering is handled by layout CSS
-- Every `<section>` gets its full-height layout class — no bare sections
-- Never set `height: 100%` on any layout class — the global override handles it
-- Never use inline `style="display: grid"` or `style="display: flex"` — use layout classes only
-- **CRITICAL: Dark/colored palettes require explicit background on every slide.** `disableLayout: true` prevents reveal.js from applying `--r-background-color` to slide backgrounds. Add `data-background-color="{hex}"` to every `<section>` element. Also add CSS fallbacks:
-  ```css
-  html, body, .reveal-viewport { background: {bg-hex} !important; }
-  .reveal .slides section { background: var(--color-background); }
-  ```
+#### 구조 규칙
+- **`#` = 타이틀 슬라이드 제목** (파일에서 1회만 사용)
+- **`##` = 슬라이드 제목** — 각 카드의 주 제목
+- **`###` = 카드 내 하위 섹션** — 한 카드 내에서 구분이 필요할 때만
+- **불릿은 `-`로 통일** — `*`, `+`, 숫자 리스트와 혼용 금지
+- **빈 줄로 요소 구분** — 제목과 본문, 불릿 그룹 사이에 빈 줄
 
-### Overflow Prevention
-- **Add universal `box-sizing: border-box`** to all slide elements (prevents padding overflow in grids):
-  ```css
-  .reveal .slides section, .reveal .slides section *, .reveal .slides section *::before, .reveal .slides section *::after { box-sizing: border-box; }
-  ```
-- Every grid/flex child must have `min-width: 0`
-- Grid gaps: max `1rem` for 3+ columns, max `1.5rem` for 2 columns
-- Total content width (padding + gaps + content) must not exceed 1280px
-- Use `overflow: hidden` on all containers with constrained children
+#### 콘텐츠 밀도
+- **카드당 불릿 ≤ 6개, 불릿당 ≤ 30단어**
+- **한 카드 = 하나의 핵심 메시지**
+- **빈 카드 없음** — 모든 카드에 최소 제목 + 2-3개 콘텐츠 요소
+- **긴 단락 → 불릿으로 변환** — Gamma는 구조화된 짧은 콘텐츠를 더 잘 해석
 
-### Typography for Projection
-- Minimum body text: `var(--type-body)` (1.125rem / 18px) — never smaller for body
-- Minimum readable text: `var(--type-body-sm)` (1rem / 16px) — for bullets and secondary
-- Captions/labels only: `var(--type-caption)` (0.8125rem) — never for readable content
-- Maximum 50 Korean characters per line — add line breaks or reduce text
+#### 제거 대상
+- YAML frontmatter (`---` 사이의 메타데이터 블록)
+- 스펙 라벨 (`**Role:**`, `**Visual Type:**`, `**Density:**`, `**Flow Context:**`)
+- 마크다운 테이블 (Gamma가 자체 생성하므로 비교 내용은 불릿/서술로 전환)
+- HTML 태그, CSS 클래스, 코드 블록 (프레젠테이션 콘텐츠가 아닌 경우)
+- 문서 서식 요소 (목차, 페이지 번호, 헤더/푸터)
 
-### Heading Alignment Consistency
-- Content slides: ALL headings left-aligned
-- Title slide + Section dividers: centered
-- Never mix alignment within a session
+#### 이미지 힌트
+이미지가 필요한 슬라이드에 blockquote 형식으로 삽입:
 
-### Image Handling
-- Use WebSearch to find real Unsplash/Pexels URLs — never use placehold.co for final output
-- If WebSearch fails, use a CSS gradient background instead of a placeholder image:
-  `background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));`
-- All images: `data-image-slot`, `data-image-desc`, `alt` attributes required
-- placehold.co URLs must use ASCII-only text (Korean characters render as broken boxes)
-
-### Animation Guidelines
-- Use `fragment fade-up` on list items (icon-list, bullets) — max 5 items
-- Do NOT use fragment on KPI cards, feature cards, or any grid-based component
-- Section dividers: `data-transition="fade"`
-- Content slides: use global transition (default: `slide`)
-
-### Korean Text Rules
-- `word-break: keep-all` is set globally — do not override with `break-all`
-- For text inside `max-width` containers: always add `margin: 0 auto` for centering
-- Avoid sentences longer than 2 lines at projection size — split into bullets
-
-### Slide Density Balance
-- Every content slide should use 60-80% of the vertical space
-- If content is sparse (< 40% filled), add a supporting visual or split with previous slide
-- If content overflows, split into 2 slides — never rely on overflow:hidden to clip content
-
-## Phase 5: Visual Quality Review (Playwright-based, Automatic)
-
-After Phase 4 completes, verify every slide by **rendering it in a real browser and examining screenshots**. Code-only review cannot catch layout breaks, text overflow, alignment issues, or visual imbalance. Do NOT skip this phase.
-
-### Step 1: Capture Screenshots
-
-**IMPORTANT: Set viewport BEFORE navigating.** The viewport must match the slide dimensions (1280x720) for accurate rendering. Using browser default (e.g. 800x600) causes layout mismatches and false positives during review.
-
-1. Start HTTP server from the directory containing the HTML file:
-   ```bash
-   python3 -m http.server 8765
-   ```
-
-2. Set viewport to slide dimensions via `browser_resize`:
-   ```
-   browser_resize(width: 1280, height: 720)
-   ```
-
-3. Capture all slides via `browser_run_code`:
-   ```javascript
-   async (page) => {
-     await page.goto('http://localhost:8765/{filename}.html');
-     await page.waitForTimeout(2000);
-     const total = await page.evaluate(() => Reveal.getTotalSlides());
-     for (let i = 0; i < total; i++) {
-       await page.evaluate((idx) => Reveal.slide(idx), i);
-       await page.waitForTimeout(300);
-       await page.screenshot({
-         path: `ppt-review-screenshots/slide-${String(i+1).padStart(2,'0')}.png`
-       });
-     }
-   }
-   ```
-
-Save screenshots to a `ppt-review-screenshots/` directory.
-
-### Step 2: Visual Review with Parallel Agents
-
-Dispatch parallel subagents (15-18 slides per agent). Each agent receives:
-- Screenshot file paths for its range
-- The HTML file path
-- Design system + layout reference paths
-
-**Each agent must READ each screenshot PNG file (Claude is multimodal) and check:**
-
-1. **Text overflow/cutoff** — Any text running off the slide edge or clipped by a container?
-2. **Alignment** — Elements centered when they should be? Columns equal width? Grid items aligned?
-3. **Spacing/cramping** — Enough breathing room? Elements too close together or too spread out?
-4. **Readability** — Text large enough for a projected screen? Contrast sufficient?
-5. **Layout integrity** — Grid/flex layouts rendering correctly? Overlapping elements?
-6. **Korean text wrapping** — Words breaking mid-syllable? Awkward line breaks in constrained-width elements?
-7. **Font rendering** — Correct fonts loading? Any fallback to system serif/sans?
-8. **Color harmony** — Colors matching the selected palette? Any jarring or unintended colors?
-9. **Component rendering** — Cards, KPI grids, timelines, process flows displaying as designed?
-10. **Professional polish** — Would this look good projected on a screen in front of 50 people?
-
-**For each visual issue:** The agent reads the HTML, locates the corresponding slide `<section>`, and Edits it to fix the problem. Common fixes:
-- Add `word-break: keep-all` for Korean text wrapping
-- Adjust `max-width` or shorten text for overflow
-- Remove conflicting inline styles
-- Add missing `margin: 0 auto` on centered elements with `max-width`
-- Fix layout class mismatches
-
-### Step 3: Re-capture and Verify (if fixes were made)
-
-After agents complete, if fixes were applied:
-1. Re-run Playwright to screenshot only the fixed slides
-2. Read the new screenshots to confirm issues are resolved
-3. If issues persist, fix and re-verify (max 2 iterations)
-
-### Step 4: Report
-
-```
-슬라이드 시각 검증 완료:
-| 범위 | 검토 | 이슈 | 수정 | 주요 변경 |
-|------|------|------|------|----------|
-| 1-18 | 18  | 3    | 3    | 텍스트 오버플로 수정, 정렬 보정 |
-| ...  | ... | ...  | ...  | ...      |
+```markdown
+> Image: 다양한 인종의 팀원들이 화이트보드 앞에서 브레인스토밍하는 밝은 오피스 환경, 따뜻한 자연광, 모던한 인테리어
 ```
 
-Kill the HTTP server after review is complete.
+차트/그래프가 필요한 경우:
 
-## Phase 6: PDF Export (Automatic)
-
-After Phase 5 completes, automatically generate a PDF version using decktape.
-
-```bash
-npx decktape reveal http://localhost:8765/{filename}.html {filename}.pdf \
-  --size 1280x720 \
-  --pdf-title "{presentation title}" \
-  --pdf-author "{author}"
+```markdown
+> Chart: 2023-2026 매출 성장 추이 (막대 차트)
+> 2023: 50억 / 2024: 80억 / 2025: 120억 / 2026E: 180억
 ```
 
-This produces a high-quality PDF with one page per slide, matching the browser rendering exactly. The PDF is saved alongside the HTML file.
+#### 한국어 최적화
+- **문장은 짧고 명확하게** — 한 불릿에 2줄 이상 금지
+- **한자어/영문 혼용 시 띄어쓰기 통일** — `AI 기반`, `SaaS 플랫폼` 형식
+- **핵심 키워드 볼드 처리** — `**핵심 수치**`, `**차별점**` 등
+- **50자 이상의 긴 문장은 분할** — 가독성 우선
 
-Kill the HTTP server after PDF export is complete.
+#### 비교/대조 콘텐츠 처리
+테이블 대신 Gamma가 자동으로 비교 카드를 생성할 수 있도록 구조화:
 
-## Image Management
+```markdown
+## 기존 방식 vs 새로운 방식
 
-After generation, if the user requests image changes:
-1. Read the HTML file
-2. List all `data-image-slot` markers with descriptions
-3. Replace via user-provided URL or WebSearch with new keywords
+**기존 방식**
+- 수동 프로세스, 주 40시간 소요
+- 오류율 15%
+- 확장 불가
+
+**새로운 방식**
+- 자동화, 주 4시간으로 단축
+- 오류율 0.1%
+- 무제한 확장
+```
+
+### Step 3: Output
+
+1. `{topic}-gamma-prompt.md` 작성 — Gamma에 붙여넣을 최종 파일
+2. `{topic}-speaker-notes.md` 작성 — 슬라이드 번호별 발표자 노트
+
+사용자에게 안내 메시지 출력:
+
+```
+Gamma 프롬프트 파일이 생성되었습니다.
+
+사용법:
+1. gamma.app 접속 → "Create new" → "Paste in text"
+2. {topic}-gamma-prompt.md 내용을 전체 복사하여 붙여넣기
+3. 테마/스타일 선택 후 "Generate"
+4. 생성 후 {topic}-speaker-notes.md를 참고하여 각 카드에 speaker notes 수동 추가
+
+팁:
+- 생성 후 각 카드의 "Enhance" 버튼으로 디자인 품질 향상 가능
+- 이미지가 마음에 들지 않으면 개별 카드에서 AI 이미지 재생성
+- 최종 배포는 PDF로 내보내기 권장 (PPTX는 레이아웃이 깨질 수 있음)
+- 워크스페이스 테마를 미리 설정하면 브랜드 일관성 유지 가능
+```
+
+---
+
+## Output Format Example
+
+최종 `{topic}-gamma-prompt.md` 파일의 구조:
+
+```markdown
+# 프레젠테이션 제목
+부제목 — 발표자명 · 날짜
+
+---
+
+## 핵심 문제 정의
+
+- **현재 상황**: 시장이 급변하고 있으나 기존 도구로는 대응 불가
+- **핵심 과제**: 의사결정 속도를 3배 향상해야 함
+- 고객의 78%가 더 빠른 응답을 기대
+
+> Image: 복잡한 데이터 대시보드를 바라보며 고민하는 비즈니스 전문가, 모던한 사무실 배경
+
+---
+
+## 우리의 솔루션
+
+AI 기반 실시간 분석 플랫폼
+
+- **자동 인사이트 추출**: 데이터에서 패턴을 자동 감지
+- **실시간 알림**: 중요 변화 발생 시 즉시 통보
+- **원클릭 리포트**: 경영진 보고서를 1분 만에 생성
+
+---
+
+## 시장 기회
+
+> Chart: TAM/SAM/SOM (동심원 차트)
+> TAM: 500억 / SAM: 120억 / SOM: 30억 (2026 기준)
+
+- 글로벌 비즈니스 인텔리전스 시장 **연 12% 성장**
+- 국내 AI 분석 도구 도입률 아직 23%로 초기 단계
+- 3년 내 시장 규모 2배 성장 전망
+```

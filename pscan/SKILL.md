@@ -1,7 +1,7 @@
 ---
 name: pscan
 version: 0.1.0
-description: 프로젝트 스캔. Analyze project source code, architecture, and structure to generate a comprehensive context document (.claude/projectology.md). Use when entering a new project, needing full project understanding, or when asked to "프로젝트 스캔", "analyze this project", "understand this codebase", "generate project context", "scan this project", or "pscan". Supports smart mode (auto-detect) and forced regeneration.
+description: 프로젝트 스캔. Analyze project source code, architecture, and structure to generate a comprehensive context document (projectology.md) at the project root. Use when entering a new project, needing full project understanding, or when asked to "프로젝트 스캔", "analyze this project", "understand this codebase", "generate project context", "scan this project", or "pscan". Supports smart mode (auto-detect) and forced regeneration.
 argument-hint: "[generate]"
 ---
 
@@ -23,7 +23,7 @@ Analyze source code, architecture, and structural patterns to produce a compact 
 Check current state and decide action.
 
 1. Run in parallel:
-   - Check if `.claude/projectology.md` exists (Read tool)
+   - Check if `projectology.md` exists (Read tool)
    - Get current git hash: `git rev-parse HEAD`
 
 2. **If file missing or `generate` argument:** → Phase 2 (Full Analysis)
@@ -129,7 +129,7 @@ Detect project type and adjust focus:
 
 For small changes (< 30 files since last generation):
 
-1. Read existing `.claude/projectology.md`
+1. Read existing `projectology.md`
 2. Get changed files: `git diff --name-only <saved-hash> HEAD`
 3. Determine which document sections are affected:
    - New top-level directories → update Structure & Modules
@@ -230,8 +230,8 @@ Uses: {OtherModule}, {AnotherModule}
 
 ## Phase 5: Save & Confirm
 
-1. Write document to `.claude/projectology.md`
+1. Write document to `projectology.md` at the project root
 2. Report to user:
    - What was analyzed (file count, module count)
    - Document token size (approximate)
-   - Suggest adding `.claude/projectology.md` to `.gitignore` if not already there (it's derived, always regeneratable)
+   - Confirm that `projectology.md` is tracked by git (do NOT add to `.gitignore`). This file should be version-controlled so team members can share project context.

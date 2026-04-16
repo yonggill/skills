@@ -1,0 +1,66 @@
+{
+  "$schema": "execute-spec/manifest/v1",
+  "version": 1,
+  "created_at": "YYYY-MM-DDTHH:MM:SSZ",
+  "updated_at": "YYYY-MM-DDTHH:MM:SSZ",
+  "source": {
+    "feature_specs_glob": "docs/specs/feature-specs/**/*.md",
+    "page_specs_glob": "docs/specs/page-specs/**/*.md"
+  },
+  "features": [
+    {
+      "id": "01-notification-center/01-notification-list-view",
+      "path": "docs/specs/feature-specs/01-notification-center/01-notification-list-view.md",
+      "title": "알림 목록 조회",
+      "page_id": "01-notification-center",
+      "complexity": "medium",
+      "us_ac_count": 7,
+      "depends_on": [],
+      "level": 1,
+      "shared_resources": {
+        "tables": ["notifications"],
+        "apis": ["GET /api/notifications", "POST /api/notifications/read"],
+        "types": ["Notification", "NotificationListResponse"],
+        "components_hint": ["DataTable", "EmptyState", "FilterBar"]
+      },
+      "status": "pending"
+    }
+  ],
+  "shared": {
+    "tables": {
+      "notifications": {
+        "defined_in": ["01-notification-center/01-notification-list-view"],
+        "columns": []
+      }
+    },
+    "types": {
+      "Notification": {
+        "defined_in": ["01-notification-center/01-notification-list-view"]
+      }
+    },
+    "design_tokens": {},
+    "conflicts": []
+  },
+  "levels": [
+    {
+      "level": 1,
+      "feature_ids": ["01-notification-center/01-notification-list-view"]
+    }
+  ],
+  "phase_status": {
+    "phase_0_discovery": "completed",
+    "phase_1_scaffold": "pending",
+    "phase_2_features": {
+      "overall": "pending",
+      "per_feature": {
+        "01-notification-center/01-notification-list-view": "pending"
+      }
+    },
+    "phase_3_integration": "pending"
+  },
+  "human_gates": {
+    "gate_1_scaffold": { "status": "pending", "approved_at": null, "notes": "" },
+    "gate_2_features": { "status": "pending", "approved_at": null, "notes": "" },
+    "gate_3_integration": { "status": "pending", "approved_at": null, "notes": "" }
+  }
+}

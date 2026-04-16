@@ -15,7 +15,7 @@ Or say "프로젝트 스캔" in natural language.
 
 ### Phase 1: Assess
 
-Checks if `.claude/projectology.md` exists and compares its `git-hash` with current HEAD.
+Checks if `projectology.md` exists and compares its `git-hash` with current HEAD.
 
 | Condition | Action |
 |-----------|--------|
@@ -58,7 +58,7 @@ Compiles findings into a structured document:
 
 ### Phase 5: Save
 
-Writes to `.claude/projectology.md` with git hash in frontmatter for freshness tracking.
+Writes to `projectology.md` at the project root with git hash in frontmatter for freshness tracking. The file is tracked by git (not gitignored) so team members can share project context.
 
 ## Output
 
@@ -79,5 +79,5 @@ Copy the `pscan/` directory to `~/.claude/skills/`:
 ## Notes
 
 - **Complements CLAUDE.md.** CLAUDE.md = instructions ("how to work"). pscan = understanding ("what the project is"). They don't overlap.
-- **`.claude/projectology.md` should be gitignored.** It's derived from code and always regeneratable.
+- **`projectology.md` should be tracked by git.** It is version-controlled so team members can share project context without regenerating.
 - **No code snippets in output.** Describes patterns and relationships — code changes, descriptions endure.
